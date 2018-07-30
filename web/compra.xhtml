@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/templates/templateHome.xhtml">
+
+            <ui:define name="content">
+
+                <f:event type="preRenderView" listener="#{empleadoBean.reporteEmpleados('F')}"/>
+                <f:event type="preRenderView" listener="#{personaBean.reportePersonas('F')}"/>
+                <f:event type="preRenderView" listener="#{productoBean.reporteProductos('F')}"/>
+                <f:event type="preRenderView" listener="#{tipoTransaccionBean.reporteTipoTransacciones()}"/>
+
+                <h:form>
+                    <div align="center">
+                        <h1></h1>
+                        <p:outputLabel value="Empleado: "/>
+                        <p:selectOneMenu value="#{compraBean.compra.empleado}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{empleadoBean.lstEmpleados}" var="emp" itemLabel="#{emp.nombresEmpleado}" itemValue="#{emp}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Cliente: "/>
+                        <p:selectOneMenu value="#{compraBean.compra.persona}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{personaBean.lstPersonas}" var="per" itemLabel="#{per.nombresPersona}" itemValue="#{per}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Producto: "/>
+                        <p:selectOneMenu value="#{compraBean.producto}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{productoBean.lstProductos}" var="pro" itemLabel="#{pro.nombreProducto}" itemValue="#{pro}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Cantidad: "/>
+                        <p:inputText value="#{compraBean.unidadesCom}" style="width:77px"/>
+
+                        <p:commandButton value="Agregar Producto" actionListener="#{compraBean.agregarProducto()}" update="tablaDetalleCompra"/>
+
+                        <h1></h1>
+                        <p:dataTable id="tablaDetalleCompra" value="#{compraBean.listaDC}" var="detCom" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+
+                            <p:column headerText="Producto">
+                                <p:outputLabel value="#{detCom.producto.nombreProducto}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio Cpa">
+                                <p:outputLabel value="#{detCom.producto.valorCompraProducto}">
+                                    <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                                </p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="Precio Vta">
+                                <p:outputLabel value="#{detCom.producto.valorVentaProducto}">
+                                    <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                                </p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="IVA">
+                                <p:outputLabel value="#{detCom.producto.IVA}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detCom.unidadesCompradas}"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <h1></h1>
+                        <p:outputLabel value="Método de Pago: "/>
+                        <p:selectOneMenu value="#{compraBean.compra.tipoTransaccion}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{tipoTransaccionBean.lstTipoTransacciones}" var="tra" itemLabel="#{tra.descripcionTransaccion}" itemValue="#{tra}"/>                       
+                        </p:selectOneMenu>
+
+                        <h1></h1>
+                        <p:commandButton value="Aceptar Compra" actionListener="#{compraBean.ingresarCompra()}"/>
+
+                    </div> 
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+
+</html>

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/templates/templateHome.xhtml">
+
+            <ui:define name="content">
+
+                <f:event type="preRenderView" listener="#{personaBean.reportePersonas('F')}"/>
+                <f:event type="preRenderView" listener="#{tipoPersonaBean.reporteTipoPersonas()}"/>
+                <f:event type="preRenderView" listener="#{tipoDocumentoBean.reporteTipoDocumentos()}"/>
+                <f:event type="preRenderView" listener="#{departamentoBean.reporteDepartamentos()}"/>
+                <f:event type="preRenderView" listener="#{ciudadBean.reporteCiudades()}"/>
+
+                <p:growl id="msjPersona" autoUpdate="true"/>
+
+                <h:form id="frm">
+
+                    <h1></h1>
+                    <p:commandButton value="Nueva Persona" oncomplete="PF('wdgtPersona').show();" actionListener="#{personaBean.setAccionBotonPersona('Guardar')}" update=":dlgPersona"/>
+
+                    <h1></h1>
+                    <p:dataTable id="tablaPersonas" value="#{personaBean.lstPersonas}" var="persona"  paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <p:column headerText="Tipo Persona" style="text-align:center">
+                            <p:outputLabel value="#{persona.idTipoPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Tipo Documento" style="text-align:center">
+                            <p:outputLabel value="#{persona.idTipoDocumento}"/>
+                        </p:column>
+
+                        <p:column headerText="Identificación" style="text-align:center">
+                            <p:outputLabel value="#{persona.identificacionPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombres" style="text-align:center">
+                            <p:outputLabel value="#{persona.nombresPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Apellidos" style="text-align:center">
+                            <p:outputLabel value="#{persona.apellidosPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Departamento" style="text-align:center">
+                            <p:outputLabel value="#{persona.idDepartamento}"/>
+                        </p:column>
+
+                        <p:column headerText="Ciudad" style="text-align:center">
+                            <p:outputLabel value="#{persona.idCiudad}"/>
+                        </p:column>
+
+                        <p:column headerText="Direccion" style="text-align:center">
+                            <p:outputLabel value="#{persona.direccionPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono" style="text-align:center">
+                            <p:outputLabel value="#{persona.telefonoPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Correo" style="text-align:center">
+                            <p:outputLabel value="#{persona.correoPersona}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar" style="width:77px; text-align:center">
+                            <p:commandLink value="Modificar" actionListener="#{personaBean.buscarPersona(persona)}" oncomplete="PF('wdgtPersona').show();" update=":dlgPersona"/>
+                        </p:column>
+                        <p:column headerText="Eliminar" style="width:77px; text-align:center">
+                            <p:commandLink value="Eliminar" actionListener="#{personaBean.eliminarPersona(persona)}" update="tablaPersonas"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <p:dialog id="dlgPersona" header="Información Persona" widgetVar="wdgtPersona">
+
+                    <h:form>
+
+                        <p:outputLabel value="Tipo Persona: "/>
+                        <p:selectOneMenu value="#{personaBean.persona.idTipoPersona}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{tipoPersonaBean.lstTipoPersonas}" var="tPer" itemLabel="#{tPer.descripcionPersona}" itemValue="#{tPer.idTipoPersona}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Tipo Documento: "/>
+                        <p:selectOneMenu value="#{personaBean.persona.idTipoDocumento}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{tipoDocumentoBean.lstTipoDocumentos}" var="tDoc" itemLabel="#{tDoc.descripcionDocumento}" itemValue="#{tDoc.idTipoDocumento}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Identificación: "/>
+                        <p:inputText value="#{personaBean.persona.identificacionPersona}"/>
+
+                        <p:outputLabel value=" Nombres: "/>
+                        <p:inputText value="#{personaBean.persona.nombresPersona}"/>
+
+                        <p:outputLabel value=" Apellidos: "/>
+                        <p:inputText value="#{personaBean.persona.apellidosPersona}"/>
+
+                        <p:outputLabel value=" Departamento: "/>
+                        <p:selectOneMenu value="#{personaBean.persona.idDepartamento}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{departamentoBean.lstDepartamentos}" var="dep" itemLabel="#{dep.nombreDepartamento}" itemValue="#{dep.idDepartamento}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Ciudad: "/>
+                        <p:selectOneMenu value="#{personaBean.persona.idCiudad}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{ciudadBean.lstCiudades}" var="ciu" itemLabel="#{ciu.nombreCiudad}" itemValue="#{ciu.idCiudad}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Direccion: "/>
+                        <p:inputText value="#{personaBean.persona.direccionPersona}"/>
+
+                        <p:outputLabel value=" Telefono: "/>
+                        <p:inputText value="#{personaBean.persona.telefonoPersona}"/>
+
+                        <p:outputLabel value=" Correo: "/>
+                        <p:inputText value="#{personaBean.persona.correoPersona}"/>
+
+                        <p:commandButton value="#{personaBean.accionBotonPersona}" actionListener="#{personaBean.operarAccionBotonPersona()}" oncomplete="PF('wdgtPersona').hide();" update=":frm:tablaPersonas"/>
+                        <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdgtPersona').hide();"/>
+
+                    </h:form>
+
+                </p:dialog>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+
+</html>

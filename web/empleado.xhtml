@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/templates/templateHome.xhtml">
+
+            <ui:define name="content">
+
+                <f:event type="preRenderView" listener="#{empleadoBean.reporteEmpleados('F')}"/>
+                <f:event type="preRenderView" listener="#{departamentoBean.reporteDepartamentos()}"/>
+                <f:event type="preRenderView" listener="#{ciudadBean.reporteCiudades()}"/>
+
+                <p:growl id="msjEmpleado" autoUpdate="true"/>
+
+                <h:form id="frm">
+
+                    <h1></h1>
+                    <p:commandButton value="Nuevo Empleado" oncomplete="PF('wdgtEmpleado').show();" actionListener="#{empleadoBean.setAccionBotonEmpleado('Guardar')}" update=":dlgEmpleado"/>
+
+                    <h1></h1>
+                    <p:dataTable id="tablaEmpleados" value="#{empleadoBean.lstEmpleados}" var="empleado"  paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <p:column headerText="Identificación" style="text-align:center">
+                            <p:outputLabel value="#{empleado.identificacionEmpleado}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombres" style="text-align:center">
+                            <p:outputLabel value="#{empleado.nombresEmpleado}"/>
+                        </p:column>
+
+                        <p:column headerText="Apellidos" style="text-align:center">
+                            <p:outputLabel value="#{empleado.apellidosEmpleado}"/>
+                        </p:column>
+
+                        <p:column headerText="Departamento" style="text-align:center">
+                            <p:outputLabel value="#{empleado.departamento.nombreDepartamento}"/>
+                        </p:column>
+
+                        <p:column headerText="Ciudad" style="text-align:center">
+                            <p:outputLabel value="#{empleado.idCiudad}"/>
+                        </p:column>
+
+                        <p:column headerText="Direccion" style="text-align:center">
+                            <p:outputLabel value="#{empleado.direccionEmpleado}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono" style="text-align:center">
+                            <p:outputLabel value="#{empleado.telefonoEmpleado}"/>
+                        </p:column>
+
+                        <p:column headerText="Correo" style="text-align:center">
+                            <p:outputLabel value="#{empleado.correoEmpleado}"/>
+                        </p:column>
+
+                        <p:column  headerText="USER" style="text-align:center">
+                            <p:outputLabel value="#{empleado.userEmp}"/>
+                        </p:column>
+
+                        <p:column  headerText="PASS" style="text-align:center">
+                            <p:outputLabel value="#{empleado.passEmp}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar" style="width:77px; text-align:center">
+                            <p:commandLink value="Modificar" actionListener="#{empleadoBean.buscarEmpleado(empleado)}" oncomplete="PF('wdgtEmpleado').show();" update=":dlgEmpleado"/>
+                        </p:column>
+                        <p:column headerText="Eliminar" style="width:77px; text-align:center">
+                            <p:commandLink value="Eliminar" actionListener="#{empleadoBean.eliminarEmpleado(empleado)}" update="tablaEmpleados"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <p:dialog id="dlgEmpleado" header="Información Empleado" widgetVar="wdgtEmpleado">
+
+                    <h:form>
+
+                        <p:outputLabel value="Identificación: "/>
+                        <p:inputText value="#{empleadoBean.empleado.identificacionEmpleado}"/>
+
+                        <p:outputLabel value=" Nombres: "/>
+                        <p:inputText value="#{empleadoBean.empleado.nombresEmpleado}"/>
+
+                        <p:outputLabel value=" Apellidos: "/>
+                        <p:inputText value="#{empleadoBean.empleado.apellidosEmpleado}"/>
+
+                        <p:outputLabel value=" Departamento: "/>
+                        <p:selectOneMenu value="#{empleadoBean.empleado.departamento}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{departamentoBean.lstDepartamentos}" var="dep" itemLabel="#{dep.nombreDepartamento}" itemValue="#{dep}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Ciudad: "/>
+                        <p:selectOneMenu value="#{empleadoBean.empleado.idCiudad}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{ciudadBean.lstCiudades}" var="ciu" itemLabel="#{ciu.nombreCiudad}" itemValue="#{ciu.idCiudad}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Direccion: "/>
+                        <p:inputText value="#{empleadoBean.empleado.direccionEmpleado}"/>
+
+                        <p:outputLabel value=" Telefono: "/>
+                        <p:inputText value="#{empleadoBean.empleado.telefonoEmpleado}"/>
+
+                        <p:outputLabel value=" Correo: "/>
+                        <p:inputText value="#{empleadoBean.empleado.correoEmpleado}"/>
+
+                        <p:outputLabel value=" USER: "/>
+                        <p:inputText value="#{empleadoBean.empleado.userEmp}"/>
+
+                        <p:outputLabel value=" PASS: "/>
+                        <p:inputText value="#{empleadoBean.empleado.passEmp}"/>
+
+                        <p:commandButton value="#{empleadoBean.accionBotonEmpleado}" actionListener="#{empleadoBean.operarAccionBotonEmpleado()}" oncomplete="PF('wdgtEmpleado').hide();" update=":frm:tablaEmpleados"/>
+                        <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdgtEmpleado').hide();"/>
+
+                    </h:form>
+
+                </p:dialog>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+
+</html>

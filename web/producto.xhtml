@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/templates/templateHome.xhtml">
+
+            <ui:define name="content">
+
+                <f:event type="preRenderView" listener="#{productoBean.reporteProductos('F')}"/>
+                <f:event type="preRenderView" listener="#{categoriaBean.reporteCategorias('F')}"/>
+                <f:event type="preRenderView" listener="#{presentacionProductoBean.reportePresentacionesProducto()}"/>
+                <f:event type="preRenderView" listener="#{ubicacionProductoBean.reporteUbicacionesProducto()}"/>
+  
+                <p:growl id="msjProducto" autoUpdate="true"/>
+
+                <h:form id="frm">
+
+                    <h1></h1>
+                    <p:commandButton value="Nuevo Producto" oncomplete="PF('wdgtProducto').show();" actionListener="#{productoBean.setAccionBotonProducto('Guardar')}" update=":dlgProducto"/>
+                    
+                    <h1></h1>
+                    <p:dataTable id="tablaProductos" value="#{productoBean.lstProductos}" var="producto"  paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <p:column headerText="Codigo" style="width:105px; text-align:center">
+                            <p:outputLabel value="#{producto.codigoProducto}"/>
+                        </p:column>
+
+                        <p:column headerText="Producto" style="text-align:center">
+                            <p:outputLabel value="#{producto.nombreProducto}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align:center">
+                            <p:outputLabel value="#{producto.descripcionProducto}"/>
+                        </p:column>
+
+                        <p:column headerText="Stock" style="width:55px; text-align:center">
+                            <p:outputLabel value="#{producto.stockProducto}" style="text-align:center"/>
+                        </p:column>
+
+                        <p:column headerText="Valor Compra" style="width:88px; text-align:center">
+                            <p:outputLabel value="#{producto.valorCompraProducto}" style="text-align:center">
+                                <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Valor Venta" style="width:88px; text-align:center">
+                            <p:outputLabel value="#{producto.valorVentaProducto}" style="text-align:center">
+                                <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="IVA" style="width:35px; text-align:center">
+                            <p:outputLabel value="#{producto.IVA}" style="text-align:center">
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Categoria" style="text-align:center">
+                            <p:outputLabel value="#{producto.idCategoria}"/>
+                        </p:column>
+
+                        <p:column headerText="Presentación" style="width:115px; text-align:center">
+                            <p:outputLabel value="#{producto.idPresentacionProducto}"/>
+                        </p:column>
+
+                        <p:column  headerText="Ubicación" style="width:83px; text-align:center">
+                            <p:outputLabel value="#{producto.idUbicacionProducto}"/>
+                        </p:column>
+
+                        <p:column headerText="Modificar" style="width:77px; text-align:center">
+                            <p:commandLink value="Modificar" actionListener="#{productoBean.buscarProducto(producto)}" oncomplete="PF('wdgtProducto').show();" update=":dlgProducto"/>
+                        </p:column>
+                        <p:column headerText="Eliminar" style="width:69px; text-align:center">
+                            <p:commandLink value="Eliminar" actionListener="#{productoBean.eliminarProducto(producto)}" update="tablaProductos"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <p:dialog id="dlgProducto" header="Información Producto" widgetVar="wdgtProducto">
+
+                    <h:form>
+
+                        <p:outputLabel value="Codigo: "/>
+                        <p:inputText value="#{productoBean.producto.codigoProducto}"/>
+
+                        <p:outputLabel value=" Producto: "/>
+                        <p:inputText value="#{productoBean.producto.nombreProducto}"/>
+
+                        <p:outputLabel value=" Descripción: " for="desPro"/>
+                        <p:inputTextarea id="desPro" value="#{productoBean.producto.descripcionProducto}"/>
+
+                        <p:outputLabel value=" Stock: "/>
+                        <p:inputText value="#{productoBean.producto.stockProducto}"/>
+
+                        <p:outputLabel value=" Valor Compra: ">
+                            <p:inputText value="#{productoBean.producto.valorCompraProducto}">
+                                <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                            </p:inputText>
+                        </p:outputLabel>
+
+                        <p:outputLabel value=" Valor Venta: ">
+                            <p:inputText value="#{productoBean.producto.valorVentaProducto}">
+                                <f:convertNumber type="currency" currencySymbol="$ " minFractionDigits="0"/>
+                            </p:inputText>
+                        </p:outputLabel>
+
+                        <p:outputLabel value=" IVA: "/>
+                        <p:selectOneMenu value="#{productoBean.producto.IVA}">
+                            <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="SI" itemValue="SI"/>
+                            <f:selectItem itemLabel="NO" itemValue="NO"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Categoria: "/>
+                        <p:selectOneMenu value="#{productoBean.producto.idCategoria}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{categoriaBean.lstCategorias}" var="cat" itemLabel="#{cat.nombreCategoria}" itemValue="#{cat.idCategoria}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Presentación: "/>
+                        <p:selectOneMenu value="#{productoBean.producto.idPresentacionProducto}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{presentacionProductoBean.lstPresentacionesProducto}" var="pre" itemLabel="#{pre.descripcionPresentacionPro}" itemValue="#{pre.idPresentacionProducto}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value=" Ubicación: "/>
+                        <p:selectOneMenu value="#{productoBean.producto.idUbicacionProducto}">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}"/>
+                            <f:selectItems value="#{ubicacionProductoBean.lstUbicacionesProducto}" var="ubi" itemLabel="#{ubi.descripcionUbicacionPro}" itemValue="#{ubi.idUbicacionProducto}"/>                       
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="#{productoBean.accionBotonProducto}" actionListener="#{productoBean.operarAccionBotonProducto()}" oncomplete="PF('wdgtProducto').hide();" update=":frm:tablaProductos"/>
+                        <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdgtProducto').hide();"/>
+
+                    </h:form>
+
+                </p:dialog>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+
+</html>
